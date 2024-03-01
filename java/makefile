@@ -1,7 +1,7 @@
 ##
 # source directory
 ##
-SRC_DIR := src
+SRC_DIR := lox
 
 ##
 # output directory
