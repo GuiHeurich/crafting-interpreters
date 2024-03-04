@@ -20,13 +20,13 @@ Then, there are two options.
 You can either pass in a file path to some source code, like so:
 
 ``` java
-java -cp out/com/crafting_interpreters/java/lox/Lox [<file_path>]
+java -cp ./out com/crafting_interpreters/java/lox/Lox [<file_path>]
 ```
 
 Or, open the REPL by running the class without any arguments
 
 ``` java
-java -cp out/com/crafting_interpreters/java/lox/Lox
+java -cp ./out com/crafting_interpreters/java/lox/Lox
 ```
 
 In the REPL, you can type in some code and it would evaluate, print, and prompt the user again.
