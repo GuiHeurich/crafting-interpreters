@@ -44,4 +44,3 @@ STRING "Hello World" Hello World
 EOF  null
 ```
 
->>>>>>> c5b3c0e (Add information to the README)
