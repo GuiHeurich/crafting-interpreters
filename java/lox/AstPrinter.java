@@ -1,6 +1,9 @@
 package com.crafting_interpreters.java.lox;
 
 class AstPrinter implements Expr.Visitor<String> {
+    private Environment environment = new Environment();
+
+
     String print(Expr expr) {
         return expr.accept(this);
     }
@@ -24,6 +27,11 @@ class AstPrinter implements Expr.Visitor<String> {
     @Override
     public String visitUnaryExpr(Expr.Unary expr) {
         return parenthesize(expr.operator.lexeme, expr.right);
+    }
+
+    @Override
+    public String visitVariableExpr(Expr.Variable expr) {
+      return expr.toString();
     }
 
     private String parenthesize(String name, Expr... exprs) {
