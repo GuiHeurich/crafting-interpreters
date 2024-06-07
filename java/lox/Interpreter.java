@@ -54,7 +54,6 @@ class Interpreter implements Expr.Visitor<Object>,
     @Override
     public Void visitWhileStmt(Stmt.While stmt) {
         while (isTruthy(evaluate(stmt.condition))) {
-            System.out.println("IN WHILE LOOP");
             execute(stmt.body);
         }
         return null;

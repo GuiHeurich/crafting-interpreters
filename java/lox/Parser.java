@@ -144,7 +144,7 @@ class Parser {
     private Stmt expressionStatement() {
         Expr expr = expression();
         consume(SEMICOLON, "Expect ';' after expression.");
-        return new Stmt.Print(expr);
+        return new Stmt.Expression(expr);
     }
 
     private List<Stmt> block() {
