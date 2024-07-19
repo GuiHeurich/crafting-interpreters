@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import sun.tools.jstat.ExpressionResolver;
-
 import static com.crafting_interpreters.java.lox.TokenType.*;
 
 class Parser {
