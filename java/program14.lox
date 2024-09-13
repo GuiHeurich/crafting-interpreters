@@ -9,6 +9,15 @@ class BostonCream < Doughnut {
     super.cook();
     print "Pipe full of custard and coat with chocolate.";
   }
+
+  serve_with(drink) {
+    if(drink == "Coca-Cola") {
+      print "Donuts have enough sugar!!!";
+    } else {
+      print "Enjoy your donut with " + drink + "!";
+    }
+  }
 }
 
 BostonCream().cook();
+BostonCream().serve_with("Coca-Cola");
