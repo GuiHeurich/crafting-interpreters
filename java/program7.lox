@@ -1,0 +1,5 @@
+fun Print() {
+  print "hello";
+}
+
+Print();
