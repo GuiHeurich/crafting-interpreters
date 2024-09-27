@@ -9,7 +9,19 @@ https://craftinginterpreters.com/the-lox-language.html
 ## jlox
 
 The first implementation is an interpreter in Java. 
-From the `/java/` directory, run this to compile all .java files to an output folder.
+From the `/java/` directory, run the following command to compile the AST generator:
+
+``` java
+javac -d out/ lox/tool/*.java
+```
+
+Then run the AST generator to generate the necessary classes.
+
+``` java
+java -cp ./out com/crafting_interpreters/java/lox/GenerateAst ./lox
+```
+
+Then, run this to compile all .java files to an output folder.
 
 ``` java
 javac -d out/ lox/*.java
@@ -29,18 +41,6 @@ Or, open the REPL by running the class without any arguments
 java -cp ./out com/crafting_interpreters/java/lox/Lox
 ```
 
-In the REPL, you can type in some code and it would evaluate, print, and prompt the user again.
+## clox
 
-``` sh
-jlox>var = "This is a string!"
-IDENTIFIER var null
-EQUAL = null
-STRING "This is a string!" This is a string!
-EOF  null
-
-jlox> print "Hello World"
-IDENTIFIER print null
-STRING "Hello World" Hello World
-EOF  null
-```
 
