@@ -1,5 +1,3 @@
-# fibbonacci numbers up to a 1000
-
 var a = 0;
 var temp;
 
