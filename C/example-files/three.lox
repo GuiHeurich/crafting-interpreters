@@ -1,0 +1,18 @@
+var temp;
+
+for (var b = 2; b < 3; b = b + 1) {
+  print b;
+  temp = b;
+
+  for (temp; temp > 0; temp = temp - 1) {
+    if (temp / 1 == 1) {
+      print temp / 1 == 1;
+      if (temp / temp == 1) {
+      print "Found a prime:";
+      print temp;
+    }
+  }
+
+    temp = temp - 1;
+  }
+}

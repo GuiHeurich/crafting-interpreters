@@ -1,0 +1,7 @@
+fun c(a, b, c) {
+  var total = a + b + c;
+  print(total);
+  return total;
+}
+
+c(1, 2, 3);
