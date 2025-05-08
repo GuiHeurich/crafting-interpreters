@@ -59,10 +59,17 @@ static void defineNative(const char* name, NativeFn function) {
 void initVM() {
     resetStack();
     vm.objects = NULL;
+    vm.bytesAllocated = 0;
+    vm.nextGC = 1024 * 1024;
+
+    vm.grayCount = 0;
+    vm.grayCapacity = 0;
+    vm.grayStack = NULL;
+
     initTable(&vm.globals);
     initTable(&vm.strings);
 
-    defineNative("clock", clockNative);
+//    defineNative("clock", clockNative);
 }
 
 void freeVM() {
@@ -127,16 +134,14 @@ static bool callValue(Value callee, int argCount) {
 static ObjUpvalue* captureUpvalue(Value* local) {
   ObjUpvalue* prevUpvalue = NULL;
   ObjUpvalue* upvalue = vm.openUpvalues;
+
   while (upvalue != NULL && upvalue->location > local) {
     prevUpvalue = upvalue;
     upvalue = upvalue->next;
   }
 
-  if (upvalue != NULL && upvalue->location == local) {
-    return upvalue;
-  }
-
   ObjUpvalue* createdUpvalue = newUpvalue(local);
+
   createdUpvalue->next = upvalue;
 
   if (prevUpvalue == NULL) {
@@ -149,12 +154,18 @@ static ObjUpvalue* captureUpvalue(Value* local) {
 }
 
 static void closeUpvalues(Value* last) {
-  while (vm.openUpvalues != NULL &&
-         vm.openUpvalues->location >= last) {
-    ObjUpvalue* upvalue = vm.openUpvalues;
+  ObjUpvalue** current = &vm.openUpvalues;
+
+  while (*current != NULL && (*current)->location >= last) {
+    ObjUpvalue* upvalue = *current;
+
+    if (upvalue == NULL) {
+      break;
+    }
+
     upvalue->closed = *upvalue->location;
     upvalue->location = &upvalue->closed;
-    vm.openUpvalues = upvalue->next;
+    *current = upvalue->next;
   }
 }
 
@@ -163,8 +174,8 @@ static bool isFalsey(Value value) {
 }
 
 static void concatenate() {
-    ObjString* b = AS_STRING(pop());
-    ObjString* a = AS_STRING(pop());
+    ObjString* b = AS_STRING(peek(0));
+    ObjString* a = AS_STRING(peek(1));
 
     int length = a->length + b->length;
     char* chars = ALLOCATE(char, length + 1);
@@ -173,6 +184,8 @@ static void concatenate() {
     chars[length] = '\0';
 
     ObjString* result = takeString(chars, length);
+    pop();
+    pop();
     push(OBJ_VAL(result));
 
 }
@@ -231,6 +244,7 @@ static InterpretResult run() {
                 for (int i = 0; i < closure->upvalueCount; i++) {
                     uint8_t isLocal = READ_BYTE();
                     uint8_t index = READ_BYTE();
+
                     if (isLocal) {
                         closure->upvalues[i] =
                             captureUpvalue(frame->slots + index);
