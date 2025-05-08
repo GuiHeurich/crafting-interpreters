@@ -135,23 +135,12 @@ static ObjUpvalue* captureUpvalue(Value* local) {
   ObjUpvalue* prevUpvalue = NULL;
   ObjUpvalue* upvalue = vm.openUpvalues;
 
-  printf("Trying to capture upvalue at %p with value ", local);
-  printValue(*local);
-  printf("\n");
-
   while (upvalue != NULL && upvalue->location > local) {
     prevUpvalue = upvalue;
     upvalue = upvalue->next;
   }
 
-  if (upvalue != NULL && upvalue->location == local) {
-    printf("Found existing upvalue at %p\n", upvalue->location);
-    return upvalue;
-  }
-
   ObjUpvalue* createdUpvalue = newUpvalue(local);
-
-  printf("Created new upvalue %p for location %p\n", createdUpvalue, local);
 
   createdUpvalue->next = upvalue;
 
@@ -165,21 +154,14 @@ static ObjUpvalue* captureUpvalue(Value* local) {
 }
 
 static void closeUpvalues(Value* last) {
-  printf("Closing upvalues for slots >= %p\n", last);
   ObjUpvalue** current = &vm.openUpvalues;
 
   while (*current != NULL && (*current)->location >= last) {
     ObjUpvalue* upvalue = *current;
 
-    // Add safety check
     if (upvalue == NULL) {
-      printf("Warning: NULL upvalue encountered!\n");
       break;
     }
-
-    printf("Closing upvalue at %p with value ", upvalue->location);
-    printValue(*upvalue->location);
-    printf("\n");
 
     upvalue->closed = *upvalue->location;
     upvalue->location = &upvalue->closed;
@@ -354,9 +336,6 @@ static InterpretResult run() {
             }
             case OP_GET_UPVALUE: {
                 uint8_t slot = READ_BYTE();
-                printf("Getting upvalue %d at %p with value ", slot, *frame->closure->upvalues[slot]->location);
-                printValue(*frame->closure->upvalues[slot]->location);
-                printf("\n");
                 push(*frame->closure->upvalues[slot]->location);
                 break;
             }

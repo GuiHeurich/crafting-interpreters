@@ -207,12 +207,8 @@ void freeObjects() {
     Obj* object = vm.objects;
     while (object != NULL) {
     Obj* next = object->next; // Store next BEFORE freeing object
-    printf("Freeing object at %p (type %d)\n", (void*)object, object->type); // <-- ADD THIS
-    if ((void*)object == (void*)0x3) { // Optional: add extra check
-        printf("!!! Found suspicious 0x3 pointer !!!\n");
-    }
-        freeObject(object);
-        object = next;
-}
-    free(vm.grayStack);
+      freeObject(object);
+      object = next;
+  }
+  free(vm.grayStack);
 }
