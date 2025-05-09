@@ -300,8 +300,6 @@ static InterpretResult run() {
             case OP_CONSTANT: {
                 Value constant = READ_CONSTANT();
                 push(constant);
-//                printValue(constant);
-//                printf("\n");
                 break;
             case OP_NIL:      push(NIL_VAL); break;
             case OP_TRUE:     push(BOOL_VAL(true)); break;
@@ -356,6 +354,37 @@ static InterpretResult run() {
                 closeUpvalues(vm.stackTop - 1);
                 pop();
                 break;
+           case OP_GET_PROPERTY: {
+	      if (!IS_INSTANCE(peek(0))) {
+	        runtimeError("Only instance have properties.");
+	        return INTERPRET_RUNTIME_ERROR;
+	      }
+	      ObjInstance* instance = AS_INSTANCE(peek(0));
+	      ObjString* name = READ_STRING();
+
+	      Value value;
+	      if (tableGet(&instance->fields, name, &value)) {
+		pop();
+		push(value);
+		break;
+	      }
+
+	      runtimeError("Undefined property '%s'.", name->chars);
+	      return INTERPRET_RUNTIME_ERROR;
+            }
+	    case OP_SET_PROPERTY: {
+	      if (!IS_INSTANCE(peek(1))) {
+		runtimeError("Only instances have fields.");
+		return INTERPRET_RUNTIME_ERROR;
+	      }
+
+	      ObjInstance* instance = AS_INSTANCE(peek(1));
+	      tableSet(&instance->fields, READ_STRING(), peek(0));
+	      Value value = pop();
+	      pop();
+	      push(value);
+	      break;
+	    }
             case OP_EQUAL: {
                 Value b = pop();
                 Value a = pop();
